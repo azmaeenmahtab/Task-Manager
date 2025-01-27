@@ -13,11 +13,20 @@ const displayTasks = () => {
       <strong>Title:</strong> ${task.title}<br/>
       <strong>Description:</strong> ${task.description}<br/>
       <strong>Priority:</strong> ${task.priority}<br/>
+      <button class="toggleBtn" data-id="${task.taskId}">${task.isCompleted ? "Complete" : "Incomplete"} 
       <button class="deleteBtn" data-id="${task.taskId}">Delete</button>
       <button class="updateBtn" data-id="${task.taskId}">Update</button>
     `;
         outputDiv.appendChild(taskCard);
     });
+
+    // add event listener to toggle btn
+    document.querySelectorAll('.toggleBtn').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            const taskId = event.target.getAttribute("data-id");
+            toggleTask(taskId);
+        })
+    })
 
     // Add event listeners to update buttons
     document.querySelectorAll(".updateBtn").forEach((btn) => {
@@ -35,7 +44,18 @@ const displayTasks = () => {
         });
     });
 };
+// toggle task function
+const toggleTask = (taskId) => {
+    const task = taskArray.find((task) => task.taskId === taskId);
+    if (task) {
+        task.isCompleted = !task.isCompleted;
 
+        localStorage.setItem('Tasks', JSON.stringify(taskArray));
+
+        displayTasks();
+    }
+
+}
 
 
 // update task function
@@ -82,6 +102,7 @@ function Task(title, description, priority, id) {
     this.description = description;
     this.priority = priority;
     this.taskId = id;
+    this.isCompleted = false;
 }
 
 // Event listener for adding a new task
