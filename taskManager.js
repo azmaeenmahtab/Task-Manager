@@ -1,94 +1,137 @@
-// constructor dunction to create object for each task
-function task(title, description, priority, id) {
+// Array to hold tasks
+let taskArray = [];
+
+// Function to display tasks in the DOM
+const displayTasks = () => {
+    const outputDiv = document.getElementById("allTaskList");
+    outputDiv.innerHTML = "";
+
+    taskArray.forEach((task) => {
+        const taskCard = document.createElement("p");
+        taskCard.className = "task-card";
+        taskCard.innerHTML = `
+      <strong>Title:</strong> ${task.title}<br/>
+      <strong>Description:</strong> ${task.description}<br/>
+      <strong>Priority:</strong> ${task.priority}<br/>
+      <button class="deleteBtn" data-id="${task.taskId}">Delete</button>
+      <button class="updateBtn" data-id="${task.taskId}">Update</button>
+    `;
+        outputDiv.appendChild(taskCard);
+    });
+
+    // Add event listeners to update buttons
+    document.querySelectorAll(".updateBtn").forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+            const taskId = event.target.getAttribute("data-id");
+            updateTask(taskId);
+        });
+    });
+
+    // Add event listeners to delete buttons
+    document.querySelectorAll(".deleteBtn").forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+            const taskId = event.target.getAttribute("data-id");
+            deleteTask(taskId);
+        });
+    });
+};
+
+
+
+// update task function
+const updateTask = (taskId) => {
+    const task = taskArray.find((task) => task.taskId === taskId)
+
+    if (task) {
+        const newTitle = prompt('Enter new title : ', task.title);
+        const newDescription = prompt("Enter new description:", task.description);
+        const newPriority = prompt("Enter new priority (Low, Medium, High):", task.priority);
+
+        if (!newTitle || !newDescription || !newPriority) {
+            alert("All fields must be filled!");
+            return;
+        }
+
+        task.title = newTitle;
+        task.description = newDescription;
+        task.priority = newPriority;
+        console.log(taskArray)
+
+        localStorage.setItem('Tasks', JSON.stringify(taskArray));
+
+
+    } else {
+        console.error("Task not found!");
+    }
+    displayTasks();
+
+}
+
+// Function to load tasks from localStorage
+const setStoredData = () => {
+    const storedData = localStorage.getItem("Tasks");
+    if (storedData) {
+        taskArray = JSON.parse(storedData);
+        displayTasks();
+    }
+};
+
+// Constructor function for creating a task
+function Task(title, description, priority, id) {
     this.title = title;
     this.description = description;
     this.priority = priority;
     this.taskId = id;
 }
 
-// array of tasks
-let taskArray = [];
+// Event listener for adding a new task
+document.querySelector("#addTask").addEventListener("click", (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
 
-document.querySelector('#addTask').addEventListener('click', () => {
-    // unique id 
-    function createUniqueId() {
-        const id = Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
-        return id;
+    // Generate unique ID
+    const createUniqueId = () => {
+        return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
+    };
 
+    // Get form values
+    const title = document.querySelector("#taskTitle").value.trim();
+    const description = document.querySelector("#taskDescription").value.trim();
+    const priority = document.querySelector("#taskPriority").value;
+
+    // Validate form inputs
+    if (!title || !description || !priority) {
+        alert("Please fill in all fields!");
+        return;
     }
-    // accessing values from form
-    let title = document.querySelector('#taskTitle').value;
 
-    let description = document.querySelector('#taskDescription').value;
-
-    let priority = document.querySelector('#taskPriority').value;
-    // creating task object each time
-    const newTask = new task(title, description, priority, createUniqueId());
-    console.log(newTask)
-    // pushing each object in array
+    // Create a new task and add it to the array
+    const newTask = new Task(title, description, priority, createUniqueId());
     taskArray.push(newTask);
-    console.log(taskArray);
+    localStorage.setItem("Tasks", JSON.stringify(taskArray));
 
-    // Clear form inputs after adding the task
-    document.querySelector('#taskTitle').value = '';
-    document.querySelector('#taskDescription').value = '';
-    document.querySelector('#taskPriority').value = '';
+    // Clear form fields
+    document.querySelector("#taskTitle").value = "";
+    document.querySelector("#taskDescription").value = "";
+    document.querySelector("#taskPriority").value = "";
 
-    // printing task on screen
-    let taskList = document.querySelector('#taskList');
-    taskList.style.display = 'flex';
-
-    // title printing
-    let span1 = document.createElement('span');
-    span1.setAttribute('id', 'titleShow');
-    span1.innerText = title;
-    let div1 = document.createElement('div')
-    div1.style.display = 'flex';
-    div1.style.alignItems = 'center';
-
-    let p1 = document.createElement('p')
-    p1.innerText = 'Task Title : ';
-    div1.append(p1);
-    div1.append(span1);
-    // taskList.append(div1)
-
-
-    // description printing
-    let span2 = document.createElement('span');
-    // span2.setAttribute('id', 'titleShow');
-    span2.innerText = description;
-    let div2 = document.createElement('div')
-    div2.style.display = 'flex';
-    div2.style.alignItems = 'center';
-    let p2 = document.createElement('p')
-    p2.innerText = 'Task Description : ';
-    div2.append(p2);
-    div2.append(span2);
-    // taskList.append(div2)
-
-    // priority printing
-    let span3 = document.createElement('span');
-    // span2.setAttribute('id', 'titleShow');
-    span3.innerText = priority;
-    let div3 = document.createElement('div')
-    div3.style.display = 'flex';
-    div3.style.alignItems = 'center';
-    let p3 = document.createElement('p')
-    p3.innerText = 'Task Priority : ';
-    div3.append(p3);
-    div3.append(span3);
-    // taskList.append(div3)
-
-    let eachTaskDiv = document.createElement('div')
-    eachTaskDiv.style.border = "2px solid black"
-    eachTaskDiv.append(div1)
-    eachTaskDiv.append(div2)
-    eachTaskDiv.append(div3)
-    taskList.append(eachTaskDiv)
-    console.log(taskList)
-
+    // Update the task list display
+    displayTasks();
 });
 
-document.querySelector('dltBtn').addEventListener('click', () => {
-    console.log(taskArray)
-})
+
+
+// Function to delete task by taskId
+const deleteTask = (taskId) => {
+    // Filter out the task by taskId
+    taskArray = taskArray.filter((task) => task.taskId !== taskId);
+
+    localStorage.setItem("Tasks", JSON.stringify(taskArray));
+
+    // Update the task list display
+    displayTasks();
+};
+
+
+
+// Load tasks on page load
+setStoredData();
