@@ -5,6 +5,7 @@ let taskArray = [];
 const displayTasks = () => {
     const outputDiv = document.getElementById("allTaskList");
     outputDiv.innerHTML = "";
+    // CREATING A FORMAT OF HTML FOR EACH TASK. ALONG WITH DELETE , UPDATE AND TOGGLE BUTTON
 
     taskArray.forEach((task) => {
         const taskCard = document.createElement("p");
@@ -20,7 +21,7 @@ const displayTasks = () => {
         outputDiv.appendChild(taskCard);
     });
 
-    // add event listener to toggle btn
+    // add event listener to toggle btnS , GETTING THE UNIQUE TASK ID FROM THE CLICKED BUTTON AND EXECUTING TOGGLE FUNCTION
     document.querySelectorAll('.toggleBtn').forEach((btn) => {
         btn.addEventListener('click', (event) => {
             const taskId = event.target.getAttribute("data-id");
@@ -28,7 +29,7 @@ const displayTasks = () => {
         })
     })
 
-    // Add event listeners to update buttons
+    // Add event listeners to update buttons  GETTING THE UNIQUE TASK ID FROM THE CLICKED BUTTON AND EXECUTING UPADTE FUNCTION
     document.querySelectorAll(".updateBtn").forEach((btn) => {
         btn.addEventListener("click", (event) => {
             const taskId = event.target.getAttribute("data-id");
@@ -36,7 +37,7 @@ const displayTasks = () => {
         });
     });
 
-    // Add event listeners to delete buttons
+    // Add event listeners to delete buttons  GETTING THE UNIQUE TASK ID FROM THE CLICKED BUTTON AND EXECUTING DELETE FUNCTION
     document.querySelectorAll(".deleteBtn").forEach((btn) => {
         btn.addEventListener("click", (event) => {
             const taskId = event.target.getAttribute("data-id");
@@ -44,7 +45,7 @@ const displayTasks = () => {
         });
     });
 };
-// toggle task function
+// toggle task function , GETTING THE INDIVIDUAL TASK BY UNIQUE ID AND CHANGING THE ISCOMPLETE STATUS TO ITS OPPOSITE VALUE AFTER EVERY CLICK AND DISPLAYING IT .
 const toggleTask = (taskId) => {
     const task = taskArray.find((task) => task.taskId === taskId);
     if (task) {
@@ -58,7 +59,7 @@ const toggleTask = (taskId) => {
 }
 
 
-// update task function
+// update task function GETTING THAT INDIVIDUAL TASK AND GIVING USER INPUT FIELDS TO PUT NEW VALUES AND UPDATING THE TASK SETTING IT TO THE LOCAL STORAGE AND DISPLAYING IT 
 const updateTask = (taskId) => {
     const task = taskArray.find((task) => task.taskId === taskId)
 
