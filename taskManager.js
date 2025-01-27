@@ -80,7 +80,7 @@ document.querySelector('#addTask').addEventListener('click', () => {
     // taskList.append(div3)
 
     let eachTaskDiv = document.createElement('div')
-    eachTaskDiv.style.border = "2px solid red"
+    eachTaskDiv.style.border = "2px solid black"
     eachTaskDiv.append(div1)
     eachTaskDiv.append(div2)
     eachTaskDiv.append(div3)
